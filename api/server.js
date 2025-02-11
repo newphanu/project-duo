@@ -29,7 +29,7 @@ const knex = require("knex")({
     port: 3306,
     user: "root",
     password: "",
-    database: "db",
+    database: "stdactivity_2567",
   },
 });
 app.use(bodyParser.json())
@@ -379,7 +379,7 @@ app.post("/login", async (req, res) => {
   console.log("username & password=", req.body);
   try {
     // ตรวจสอบ username จากฐานข้อมูล
-    let row = await knex("student").where({ username: req.body.username });
+    let row = await knex("student").where({ student_id: req.body.username });
     console.log('row=', row[0])
     if (row.length === 0) {
       // หากไม่มี username ในฐานข้อมูล
