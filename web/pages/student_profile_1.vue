@@ -4,6 +4,7 @@
       <v-container fluid class="fill-height">
         <v-row justify="center" align="center">
           <v-col cols="12" sm="10" md="8" lg="6">
+            <!-- Profile Header -->
             <div class="profile-header text-center mb-6">
               <v-avatar size="150" class="md-4">
                 <v-img :src="selectedImage" alt="Profile Picture" cover>
@@ -14,16 +15,19 @@
                   </template>
                 </v-img>
 
+                <!-- Dialog สำหรับแก้ไขรูปโปรไฟล์ -->
                 <v-dialog v-model="isDialogOpen" max-width="500">
                   <template v-slot:activator="{ props: activatorProps }">
-                    <v-btn 
+                    <v-btn
                       v-bind="activatorProps"
-                      icon smal color="grey-lighten-2" size="35" style="position: absolute;
-                  bottom: -0px; /* ปรับขยับขึ้น */
-                  right: 10px; /* ขยับซ้ายเล็กน้อย */
-                  z-index: 10; /* ให้ปุ่มกล้องอยู่ด้านหน้าของ avatar */
-                  "> <v-icon size="20">mdi mdi-camera</v-icon>
-                  </v-btn>
+                      icon
+                      small
+                      color="grey-lighten-2"
+                      size="35"
+                      style="position: absolute; bottom: 0; right: 10px; z-index: 10;"
+                    >
+                      <v-icon size="20">mdi-camera</v-icon>
+                    </v-btn>
                   </template>
 
                   <v-card title="แก้ไขรูปโปรไฟล์">
@@ -49,12 +53,34 @@
               </v-avatar>
 
               <div class="profile-name">
-                <div class="text-h5 font-weight-bold mb-1">Name: {{ fullname }}</div>
-                <div class="text-subtitle-1 text-medium-emphasis">UserName: {{ username }}</div>
+                <div class="text-h5 font-weight-bold mb-1">{{ fullname }}</div>
+                <div class="text-subtitle-1 text-medium-emphasis">{{ username }}</div>
               </div>
             </div>
 
-            <v-card class="elevation-6 rounded-xl">
+            <!-- เพิ่ม Card ข้อมูลส่วนตัว -->
+            <v-card class="elevation-6 rounded-xl my-4">
+              <v-card-title class="headline">ข้อมูลส่วนตัว</v-card-title>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" sm="4" class="d-flex align-center">
+                    <v-icon color="primary" class="mr-2">mdi-account</v-icon>
+                    <span>{{ fullname }}</span>
+                  </v-col>
+                  <v-col cols="12" sm="4" class="d-flex align-center">
+                    <v-icon color="primary" class="mr-2">mdi-email</v-icon>
+                    <span>{{ username }}</span>
+                  </v-col>
+                  <v-col cols="12" sm="4" class="d-flex align-center">
+                    <v-icon color="primary" class="mr-2">mdi-calendar</v-icon>
+                    <span>เข้าร่วม: 1 มกราคม 2020</span>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+
+            <!-- Card ตั้งค่าและข้อมูลอื่นๆ (ตัวอย่างเดิม) -->
+            <!-- <v-card class="elevation-6 rounded-xl">
               <v-list>
                 <v-list-item title="General Settings" class="text-subtitle-1 font-weight-bold mb-2" disabled></v-list-item>
                 
@@ -134,7 +160,19 @@
                   </template>
                 </v-list-item>
               </v-list>
-            </v-card>
+            </v-card> -->
+
+            <!-- Success Dialog สำหรับแจ้งอัปโหลดสำเร็จ -->
+            <v-dialog v-model="isSuccessDialogOpen" max-width="400">
+              <v-card>
+                <v-card-title class="headline">สำเร็จ</v-card-title>
+                <v-card-text>{{ successMessage }}</v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="primary" text @click="isSuccessDialogOpen = false">ตกลง</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-col>
         </v-row>
       </v-container>
@@ -151,13 +189,13 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const isDialogOpen = ref(false)
+const isSuccessDialogOpen = ref(false)
+const successMessage = ref('')
 const fullname = ref('')
 const username = ref('')
 const singleFile = ref(null)
-const singleFilePreview = ref(null)
 const selectedImage = ref('')
-const fileInput = ref(null)
-
+  
 const save = () => {
   uploadSingleFile()
   isDialogOpen.value = false
@@ -176,10 +214,13 @@ const uploadSingleFile = async () => {
         },
       });
       console.log('Response:', response.data);
-      alert(response.data.message);
-
+      
       if (response.data.status === 1) {
         selectedImage.value = `http://localhost:7000/uploads/profile/${response.data.file}`;
+        successMessage.value = response.data.message || "อัปโหลดสำเร็จ!";
+        isSuccessDialogOpen.value = true;
+      } else {
+        alert(response.data.message);
       }
     } catch (error) {
       console.error('Upload single file error:', error);
@@ -216,22 +257,27 @@ const checkUser = async () => {
   }
 };
 
-const previewSingleFile = (event) => {
-  singleFilePreview.value = URL.createObjectURL(event)
-}
+const previewSingleFile = (e) => {
+  let file = null;
+  if (e && e.target && e.target.files) {
+    file = e.target.files[0];
+  } else {
+    console.error("ไม่สามารถรับไฟล์ได้:", e);
+    return;
+  }
+
+  if (file && file instanceof File) {
+    singleFile.value = file;
+    selectedImage.value = URL.createObjectURL(file);
+  } else {
+    console.error("ไฟล์ที่ได้รับมาไม่ถูกต้อง:", file);
+  }
+};
 
 onMounted(() => {
   loadUsername();
   checkUser();
 });
-
-const onFileSelected = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    singleFile.value = file;
-    singleFilePreview.value = URL.createObjectURL(file);
-  }
-};
 
 const goBack = () => {
   router.push('/student_list2')
@@ -265,6 +311,11 @@ const goBack = () => {
 
 .profile-name {
   color: #2c3e50;
+}
+
+.my-4 {
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .v-list-item {
