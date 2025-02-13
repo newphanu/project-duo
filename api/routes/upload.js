@@ -19,37 +19,53 @@ const upload = multer({ storage: storage });
 
 
 router.post('/upload-single', upload.single('picture'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ status: 0, message: "ไม่พบไฟล์อัปโหลด" });
-      }
-  
-      const { username } = req.body; // รับ username
-      console.log('file=', req.file);
-      console.log('username=', username);
-  
-      // อัปเดตรูปภาพในฐานข้อมูล
+  try {
+    if (!req.file) {
+      return res.status(400).json({ status: 0, message: "ไม่พบไฟล์อัปโหลด" });
+    }
+
+    const { username, userType } = req.body; // รับ username และ userType
+    console.log('file=', req.file);
+    console.log('username=', username);
+    console.log('userType=', userType);
+
+    if (!username || !userType) {
+      return res.status(400).json({ status: 0, message: "ข้อมูลไม่ครบถ้วน" });
+    }
+
+    // ตรวจสอบว่าเป็น student หรือ teacher และอัปเดตรูปภาพ
+    if (userType === 'student') {
+      // อัปเดตรูปภาพในตาราง student
       await db('student')
         .where({ username: username }) // ตรวจสอบจาก username
         .update({
           picture: req.file.filename, // อัปเดตชื่อไฟล์ที่อัปโหลด
         });
-  
-      res.send({
-        status: 1,
-        message: 'อัปโหลดไฟล์สำเร็จ',
-        file: req.file.filename,
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      res.status(500).send({
-        status: 0,
-        message: 'เกิดข้อผิดพลาดในการอัปโหลดไฟล์',
-        error: error.message,
-      });
+    } else if (userType === 'teacher') {
+      // อัปเดตรูปภาพในตาราง teacher
+      await db('teacher')
+        .where({ username: username }) // ตรวจสอบจาก username
+        .update({
+          picture: req.file.filename, // อัปเดตชื่อไฟล์ที่อัปโหลด
+        });
+    } else {
+      return res.status(400).json({ status: 0, message: "ไม่พบประเภทผู้ใช้" });
     }
-  });
 
+    res.send({
+      status: 1,
+      message: 'อัปโหลดไฟล์สำเร็จ',
+      file: req.file.filename,
+    });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    res.status(500).send({
+      status: 0,
+      message: 'เกิดข้อผิดพลาดในการอัปโหลดไฟล์',
+      error: error.message,
+    });
+  }
+});
     
 // API สำหรับอัปเดตข้อมูลสมาชิก
 router.post('/updateMember', upload.single('picture'), async (req, res) => {

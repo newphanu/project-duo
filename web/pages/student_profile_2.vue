@@ -181,6 +181,9 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: "layoutstudent",
+});
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import defaultImage from '@/assets/images/profile1.png'

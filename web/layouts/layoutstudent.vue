@@ -97,22 +97,12 @@ const drawer = ref(false);
 // Navigation Items Configuration
 const navigationItems = ref([
     { 
-        to: "/result", 
+        to: "/result_2", 
         text: "ผลการเข้าแถว", 
         icon: "mdi-chart-areaspline" 
     },
     { 
-        to: "/student_list2", 
-        text: "เช็คชื่อ", 
-        icon: "mdi-clipboard-check" 
-    },
-    { 
-        to: "/showStudent", 
-        text: "รายชื่อนักศึกษา", 
-        icon: "mdi-account-group" 
-    },
-    { 
-        to: "/student_profile_1", 
+        to: "/student_profile_2", 
         text: "โปรไฟล์", 
         icon: "mdi-account-details" 
     }

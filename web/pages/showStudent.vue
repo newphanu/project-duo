@@ -20,10 +20,10 @@
     >
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.id }}</td>
+          <!-- <td>{{ item.id }}</td> -->
           <td>{{ item.fullname }}</td>
           <td>{{ item.username }}</td>
-          <td>{{ item.student_id }}</td>
+          <!-- <td>{{ item.student_id }}</td> -->
           <td>
             <div class="d-flex justify-center">
               <v-icon class="me-2" size="small" @click="editItem(item)">
@@ -164,10 +164,10 @@ const form = ref(null);
 // ตัวแปรสำหรับเก็บข้อมูลนักศึกษา
 const students = ref([]);
 const headers = [
-  { title: "ID", align: "start", key: "id" },
+  // { title: "ID", align: "start", key: "id" },
   { title: "ชื่อ-นามสกุล", key: "fullname" },
   { title: "อีเมล", key: "username" },
-  { title: "รหัสนักศึกษา", key: "student_id" },
+  // { title: "รหัสนักศึกษา", key: "student_id" },
   { title: "การดำเนินการ", key: "actions", sortable: false },
 ];
 

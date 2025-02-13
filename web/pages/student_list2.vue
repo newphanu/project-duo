@@ -7,16 +7,13 @@
             <v-container class="px-4 py-6">
                 <v-card class="mb-4 pa-4 elevation-2" color="white">
                     <div class="d-flex align-center">
-                        <v-avatar color="primary" size="56" class="mr-4">
-                            <v-icon>mdi-account</v-icon>
+                        <v-avatar size="56" class="mr-4">
+                            <v-img :src="`http://localhost:7000/uploads/profile/${picture}`"></v-img>
                         </v-avatar>
                         <div>
                             <div class="text-h6 font-weight-bold">{{ fullname }}</div>
                             <div class="text-subtitle-2 text-medium-emphasis">
-                                E1 เทคโนโลยีสารสนเทศ
-                            </div>
-                            <div class="text-caption text-grey">
-                                ครูที่ปรึกษา : ครูกฤษณา แนววิเศษ
+                                E5 เทคโนโลยีสารสนเทศ
                             </div>
                         </div>
                     </div>
@@ -72,6 +69,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const fullname = ref('')
+const picture = ref('')
 const attendanceOptions = [
     { text: 'ขาด', value: 3 },
     { text: 'ลา', value: 4 },
@@ -99,6 +97,7 @@ const listData = async () => {
             ...item,
             attendance: item.attendance ?? 1
         }))
+        picture.value = localStorage.getItem('picture')
     } catch (error) {
         console.error('Error fetching data:', error)
     }

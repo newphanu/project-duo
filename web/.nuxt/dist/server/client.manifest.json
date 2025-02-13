@@ -7,12 +7,12 @@
     "module": true,
     "resourceType": "script"
   },
-  "C:/app-master/web/node_modules/nuxt/dist/app/entry.js": {
+  "C:/xampp/htdocs/project-duo/web/node_modules/nuxt/dist/app/entry.js": {
     "resourceType": "script",
     "module": true,
     "prefetch": true,
     "preload": true,
     "isEntry": true,
-    "file": "C:/app-master/web/node_modules/nuxt/dist/app/entry.js"
+    "file": "C:/xampp/htdocs/project-duo/web/node_modules/nuxt/dist/app/entry.js"
   }
 }

@@ -67,8 +67,7 @@
                       สมัครสมาชิก
                     </div>
                   </router-link>
-                  <div class="d-flex justify-center">
-                    <!-- Social Login: เมื่อคลิกจะเรียกฟังก์ชัน socialLogin พร้อมส่งชื่อแพลตฟอร์ม -->
+                  <!-- <div class="d-flex justify-center">
                     <v-btn
                       icon
                       variant="outlined"
@@ -87,7 +86,7 @@
                     >
                       <v-icon>mdi-google</v-icon>
                     </v-btn>
-                  </div>
+                  </div> -->
                 </div>
               </v-card-text>
             </v-card>
@@ -142,6 +141,8 @@ const Login = async () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("fullname", response.data.fullname);
       localStorage.setItem("username", response.data.username);
+      localStorage.setItem("userType", response.data.role);
+      localStorage.setItem("picture", response.data.picture);
 
       // แสดง Dialog ยืนยันการเข้าสู่ระบบสำเร็จ
       dialogMessage.value = "เข้าสู่ระบบสำเร็จ! กำลังนำท่านไปหน้าแสดงข้อมูล...";
@@ -149,7 +150,12 @@ const Login = async () => {
 
       // หลังจากแสดง Dialog ชั่วคราวแล้วเปลี่ยนหน้า
       setTimeout(() => {
-        router.push("/student_list2");
+        if(response.data.role === "student") {
+          router.push("/student_profile_2")
+        } else {
+          router.push("/student_profile_1")
+        }
+        // router.push("/student_list2");
       }, 2000);
     } else {
       dialogMessage.value =
